@@ -7,6 +7,7 @@ import edu.franklin.firstbank.Account;
  * the BankAccount interface utilizing the Adapter design pattern. This is my representation
  * of this implementation.
  * @author Joshua S. Garrett
+ * @version 2025/01
  */
 public class AccountToBankAccountAdapter implements BankAccount {
 
@@ -34,14 +35,20 @@ public class AccountToBankAccountAdapter implements BankAccount {
 
 	@Override
 	public void setOwner(Customer owner) {
-		parent.setOwner(owner);
+		parent.setOwner(owner.getFirstName() + " " + owner.getLastName());
 	}
 
 	@Override
 	public Customer getOwner() {
-		// return owner (String)
-		Customer cust = new Customer(parent.getOwner());
-		return null;
+		// split owner name into first and last
+		String temp = "\s";
+		String[] names = parent.getOwner().split(temp);
+		
+		// create a new customer and set first and last names
+		Customer customer = new BankCustomer();
+		customer.setFirstName(names[0]);
+		customer.setLastName(names[1]);
+		return customer;
 	}
 
 	@Override
@@ -56,26 +63,27 @@ public class AccountToBankAccountAdapter implements BankAccount {
 
 	@Override
 	public boolean deposit(Money amount) {
-		// if amount > 0
-			// balance += amount
-			// return true
+		Double amt = amount.asDouble();
+		if (amt > 0) {
+			parent.deposit(amt);
+			return true;
+		}
 		return false;
 	}
 
 	@Override
 	public boolean withdraw(Money amount) {
-		// if amount < 0
-			// return false
-		// if balance < amount
-			// return false
-		// balance -= amount
-		// return true
-		return false;
+		Double amt = amount.asDouble();
+		if (amt < 0)
+			return false;
+		if (parent.getBalance() < amt)
+			return false;
+		parent.withdraw(amt);
+		return true;
 	}
 
 	@Override
 	public Money getBalance() {
-		// return balance (double)
-		return null;
+		return new Dollar(parent.getBalance());
 	}
 }
