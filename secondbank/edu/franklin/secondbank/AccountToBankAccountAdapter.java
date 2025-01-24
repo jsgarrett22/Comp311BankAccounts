@@ -7,6 +7,7 @@ import edu.franklin.firstbank.Account;
  * the BankAccount interface utilizing the Adapter design pattern. This is my representation
  * of this implementation.
  * @author Joshua S. Garrett
+ * @version 2025/01
  */
 public class AccountToBankAccountAdapter implements BankAccount {
 
@@ -62,26 +63,27 @@ public class AccountToBankAccountAdapter implements BankAccount {
 
 	@Override
 	public boolean deposit(Money amount) {
-		// if amount > 0
-			// balance += amount
-			// return true
+		Double amt = amount.asDouble();
+		if (amt > 0) {
+			parent.deposit(amt);
+			return true;
+		}
 		return false;
 	}
 
 	@Override
 	public boolean withdraw(Money amount) {
-		// if amount < 0
-			// return false
-		// if balance < amount
-			// return false
-		// balance -= amount
-		// return true
-		return false;
+		Double amt = amount.asDouble();
+		if (amt < 0)
+			return false;
+		if (parent.getBalance() < amt)
+			return false;
+		parent.withdraw(amt);
+		return true;
 	}
 
 	@Override
 	public Money getBalance() {
-		// return balance (double)
-		return null;
+		return new Dollar(parent.getBalance());
 	}
 }
