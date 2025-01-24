@@ -34,14 +34,20 @@ public class AccountToBankAccountAdapter implements BankAccount {
 
 	@Override
 	public void setOwner(Customer owner) {
-		parent.setOwner(owner);
+		parent.setOwner(owner.getFirstName() + " " + owner.getLastName());
 	}
 
 	@Override
 	public Customer getOwner() {
-		// return owner (String)
-		Customer cust = new Customer(parent.getOwner());
-		return null;
+		// split owner name into first and last
+		String temp = "\s";
+		String[] names = parent.getOwner().split(temp);
+		
+		// create a new customer and set first and last names
+		Customer customer = new BankCustomer();
+		customer.setFirstName(names[0]);
+		customer.setLastName(names[1]);
+		return customer;
 	}
 
 	@Override
